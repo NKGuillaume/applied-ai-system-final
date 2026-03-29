@@ -1,6 +1,9 @@
 # PawPal+ Project Reflection
 
 ## 1. System Design
+Add pet 
+Sedule a wash and duration is based on size of the dog
+ sehucle a walk
 
 **a. Initial design**
 
