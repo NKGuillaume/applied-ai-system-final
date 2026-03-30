@@ -32,6 +32,37 @@ The scheduler goes beyond simple task storage with three algorithmic features:
 
 - **Filtered upcoming view** — `get_upcoming_tasks()` only returns tasks that are both incomplete and in the future, sorted by time. This means the schedule always shows what actually needs to be done next, not a mix of done and overdue items.
 
+## Testing PawPal+
+
+### Run the tests
+
+```bash
+python -m pytest
+```
+
+### What the tests cover
+
+| Area | Tests |
+|---|---|
+| **Task completion** | Marking a task complete sets `is_completed = True` |
+| **Pet task list** | Adding a task increases count and sets `pet_id` correctly |
+| **Sorting correctness** | `get_upcoming_tasks` returns tasks in chronological order |
+| **Filtering** | Completed and past tasks are excluded from upcoming view |
+| **Recurrence — daily** | Completing a daily task auto-creates a task for the next day |
+| **Recurrence — weekly** | Completing a weekly task auto-creates a task 7 days later |
+| **Recurrence — none** | Non-recurring tasks do not produce a follow-up task |
+| **Next occurrence copy** | The new task inherits title, duration, and recurrence; gets a fresh id |
+| **Conflict — exact same pet** | Two tasks at the same time for the same pet trigger a warning |
+| **Conflict — no overlap** | Well-spaced tasks produce no warning |
+| **Conflict — proximity** | Tasks within 30 minutes for the same pet trigger a proximity warning |
+| **Conflict — cross-pet** | Same time across different pets triggers a cross-pet warning |
+
+### Confidence level
+
+⭐⭐⭐⭐ (4/5)
+
+The core scheduling behaviors — sorting, recurrence, and conflict detection — are fully tested and all 15 tests pass. The remaining gap is end-to-end UI testing (Streamlit forms, session state persistence) and edge cases like scheduling across midnight or month boundaries, which are not yet covered.
+
 ## Getting started
 
 ### Setup
