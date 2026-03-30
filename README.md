@@ -22,6 +22,16 @@ Your final app should:
 - Display the plan clearly (and ideally explain the reasoning)
 - Include tests for the most important scheduling behaviors
 
+## Smarter Scheduling
+
+The scheduler goes beyond simple task storage with three algorithmic features:
+
+- **Recurring tasks** — Tasks can be set to repeat `daily`, `weekly`, or `monthly`. When `Scheduler.complete_task()` is called, it automatically creates the next occurrence using `timedelta` and adds it to the pet, so the schedule stays populated without any manual re-entry.
+
+- **Conflict detection** — Before adding a task, `check_conflict()` scans existing tasks in a single pass and flags three types of problems: exact same time for the same pet (hard conflict), exact same time across different pets (cross-pet conflict), and any task within 30 minutes for the same pet (proximity warning). Conflicts are non-fatal — the task is still scheduled but the caller receives a warning string.
+
+- **Filtered upcoming view** — `get_upcoming_tasks()` only returns tasks that are both incomplete and in the future, sorted by time. This means the schedule always shows what actually needs to be done next, not a mix of done and overdue items.
+
 ## Getting started
 
 ### Setup
