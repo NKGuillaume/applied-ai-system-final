@@ -1,0 +1,44 @@
+name: CI Diagnostic
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+jobs:
+  diag-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.10, 3.11]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Diagnostic environment
+        run: |
+          echo "== python version =="
+          python -V || true
+          echo "== uname =="
+          uname -a || true
+          echo "== lsb_release =="
+          lsb_release -a || true
+          echo "== pip version =="
+          python -m pip --version || true
+          echo "== pip freeze before install =="
+          python -m pip freeze || true
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; else pip install pytest; fi
+          echo "== pip freeze after install =="
+          python -m pip freeze
+
+      - name: Run verbose tests
+        run: |
+          python -m pytest -rA -vv
