@@ -74,6 +74,20 @@ python -m pytest
 
 See `uml_final.md` for the Mermaid.js source. Render at [mermaid.live](https://mermaid.live) and export as `uml_final.png`.
 
+### Architecture Diagram (where to click in the video)
+
+The system diagram is in `assets/system_diagram.mmd`. For the video walkthrough, open the file viewer and show these components and flows:
+
+- **UI / CLI** → shows `main.py` driving the demo
+- **Retriever** → `src/retriever.py` (loads local docs, builds TF-IDF index)
+- **Agent / RAG** → `src/rag.py` and `src/agent.py` (retrieval → prompt → LLM)
+- **LLM wrapper** → `src/llm.py` (live API or simulated fallback)
+- **Tests / Evaluator** → `tests/test_rag_confidence.py` (confidence check)
+
+Link: https://www.loom.com/share/0803b8e0d1784a2cbfe1be1069be55ad
+
+Include the architecture diagram image (`assets/system_diagram.mmd` rendered) during the 00:10–00:20 window so reviewers can match diagram to runtime output.
+
 **Class relationships:**
 
 | Relationship | Description |
@@ -106,3 +120,14 @@ streamlit run app.py
 ```bash
 python main.py
 ```
+
+---
+
+## CI & GitHub Actions
+
+- **What runs:** a GitHub Actions workflow runs `pytest` on pushes and PRs to `main` (see `.github/workflows/ci.yml`).
+- **Diagnostic workflow:** a temporary diagnostic workflow prints `python -V`, `pip freeze`, and runs verbose pytest output (`.github/workflows/ci_diag.yml`).
+- **Node.js 24 opt-in:** the workflows set `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true` to opt into Node.js 24 for JavaScript actions and avoid Node 20 deprecation issues; this is safe and reversible.
+- **Local reproduction:** run the tests locally with `python -m pytest -q` and run the demo with `python main.py --rag`.
+- **Live LLM tests:** we do not run live-API LLM calls in CI by default. To test live LLMs, set `OPENAI_API_KEY` locally and run the demo manually or create a gated workflow that uses the secret.
+
